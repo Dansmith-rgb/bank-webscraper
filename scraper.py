@@ -60,18 +60,19 @@ def lloydsbank(num, name):
                 except:
                     coloumns2 = td.find_element_by_tag_name("div")
                     deep2 = coloumns2.find_element_by_tag_name("p")
+                    count += 1
                     # Write to a csv file
                     with open("banks.csv", mode="a") as b:
                         f = csv.writer(b, delimiter=',')
                         f.writerow([deep2.text])
-                        count += 1
-                        # Printing out every other line
-                        if count % 2 == 0:
-                            num.append(deep2.text)
-                            print(num)
-                        if count % 2 == 1 or 0:
-                            name.append(deep2.text)
-                            print(name)
+                        
+                    # Printing out every other line
+                    if count % 2 == 0:
+                        num.append(deep2.text)
+                        print(num)
+                    if count % 2 == 1 or 0:
+                        name.append(deep2.text)
+                        print(name)
                 
                 if td_count == 2:
                     td_count = 0
