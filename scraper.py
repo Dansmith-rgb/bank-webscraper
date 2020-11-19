@@ -1,3 +1,4 @@
+# Importing all the modules
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -9,6 +10,8 @@ from plotly.graph_objs import Bar
 from plotly import offline
 import numpy as np
 
+
+# Defining the lists and the chrome driver
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 driver = webdriver.Chrome(PATH)
 num = []
@@ -17,14 +20,16 @@ list1 = []
 list2 = []
 
 def lloydsbank(num, name):
+    # Getting the url to scrape from.
     driver.get("https://www.lloydsbank.com/savings.html?wt.ac=products/navigation/savings")
     print(driver.title)
     count = 0
-    #num = []
-    #name = []
+    
 
     try:
+        # Telling the driver to wait for 5 seconds
         driver.implicitly_wait(5)
+        # Getting elements
         main = driver.find_element_by_tag_name("tbody")
 
         interest = main.find_elements_by_tag_name("tr")
@@ -35,14 +40,17 @@ def lloydsbank(num, name):
             coloumns = tr.find_elements_by_tag_name("td")
             for td in coloumns:
                 td_count += 1
+                # Used try and except because to get the percentage and name they are in different elements
                 try:
                     coloumnss = td.find_element_by_tag_name("div")
                     deep = coloumnss.find_element_by_tag_name("h4")
                     count2 = 0
                     count += 1
+                    # Write it to a csv file
                     with open("banks.csv", mode="a") as b:
                         f = csv.writer(b, delimiter=',')
                         f.writerow([deep.text])
+                    # Printing out every other life
                     if count % 2 == 0:
                         num.append(deep.text)
                         print(num)
@@ -52,10 +60,12 @@ def lloydsbank(num, name):
                 except:
                     coloumns2 = td.find_element_by_tag_name("div")
                     deep2 = coloumns2.find_element_by_tag_name("p")
+                    # Write to a csv file
                     with open("banks.csv", mode="a") as b:
                         f = csv.writer(b, delimiter=',')
                         f.writerow([deep2.text])
                         count += 1
+                        # Printing out every other line
                         if count % 2 == 0:
                             num.append(deep2.text)
                             print(num)
@@ -66,21 +76,12 @@ def lloydsbank(num, name):
                 if td_count == 2:
                     td_count = 0
                     break
-            #print(coloumns.text)
     except Exception as e:
         print(str(e))
         driver.quit()
 
-#n = np.array(name)
 
-#make_dict
-
-        
-
-#num.sort()
-#print(num)
 def graph_data(name, num):
-    #printn)
     data = [{
         'type': 'bar',
         'x': list1,
@@ -95,11 +96,13 @@ def graph_data(name, num):
 
     fig = {'data': data, 'layout': my_layout}
     offline.plot(fig, filename='banks_graphs.html')
-
+# Calling function
 lloydsbank(name, num)
+# Getting the max number to plot on the graph but also keeping the right name with it.
 m = name.index(max(name))
 print(m)
 print(num[m])
 list1.append(num[m])
 list2.append(name[m])
+# Calling function
 graph_data(name, num)
