@@ -4,11 +4,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pandas as pd
 import csv
 from plotly.graph_objs import Bar
 from plotly import offline
-import numpy as np
 
 
 # Defining the lists and the chrome driver
@@ -18,6 +16,7 @@ num = []
 name = []
 list1 = []
 list2 = []
+
 
 def lloydsbank(num, name):
     # Getting the url to scrape from.
@@ -44,7 +43,7 @@ def lloydsbank(num, name):
                 try:
                     coloumnss = td.find_element_by_tag_name("div")
                     deep = coloumnss.find_element_by_tag_name("h4")
-                    count2 = 0
+                    #count2 = 0
                     count += 1
                     # Write it to a csv file
                     with open("banks.csv", mode="a") as b:
@@ -68,25 +67,34 @@ def lloydsbank(num, name):
                         
                     # Printing out every other line
                     if count % 2 == 0:
+                        #h = deep2.text
+                        #print(h)
                         num.append(deep2.text)
                         print(num)
                     if count % 2 == 1 or 0:
                         name.append(deep2.text)
                         print(name)
+                    
                 
                 if td_count == 2:
                     td_count = 0
                     break
+            
+        
     except Exception as e:
         print(str(e))
         driver.quit()
 
 
+
 def graph_data(name, num):
     data = [{
         'type': 'bar',
-        'x': list1,
-        'y': list2,
+        'x': num,
+        'y': name,
+        'marker': {
+            'color': 'rgb(0, 100, 0)',
+        }
     }]
 
     my_layout = {
@@ -99,11 +107,5 @@ def graph_data(name, num):
     offline.plot(fig, filename='banks_graphs.html')
 # Calling function
 lloydsbank(name, num)
-# Getting the max number to plot on the graph but also keeping the right name with it.
-m = name.index(max(name))
-print(m)
-print(num[m])
-list1.append(num[m])
-list2.append(name[m])
-# Calling function
+# Calling function to graph data
 graph_data(name, num)
